@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Image Uploading, Axios Instances, and React Query</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/theme/black.min.css" id="theme">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/monokai.min.css">
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section>
+                <h1>Image Uploading in JS</h1>
+            </section>
+            <section>
+                <h2>Image Uploading in JS</h2>
+                <pre><code class="language-javascript">
+const uploadFile = (event) => {
+    const file = event.target.files[0];
+    const formData = new FormData();
+    formData.append("file", file);
+
+    axios.post('/upload', formData, {
+        onUploadProgress: (progressEvent) => {
+            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            console.log(`Progress: ${percentCompleted}%`);
+        }
+    })
+    .then(response => {
+        console.log("Upload successful!", response.data);
+    })
+    .catch(error => {
+        console.error("Upload failed!", error);
+    });
+};
+                </code></pre>
+            </section>
+            <section>
+                <h2>Axios Instances</h2>
+                <pre><code class="language-javascript">
+import axios from 'axios';
+import { toast } from 'react-toastify';
+
+const axiosInstance = axios.create({
+    baseURL: 'https://api.escuelajs.co/api/v1/',
+});
+
+const axiosQueryInstance = axios.create({
+    baseURL: 'https://jsonplaceholder.typicode.com/',
+});
+
+axiosInstance.interceptors.request.use(config => {
+    
+}, error => Promise.reject(error));
+
+axiosInstance.interceptors.response.use(response => {
+    
+}, error => {
+    
+});
+
+axiosQueryInstance.interceptors.request.use(config => {
+    
+}, error => {
+    
+});
+
+axiosQueryInstance.interceptors.response.use(response => {
+    
+}, error => {
+    
+});
+
+export { axiosInstance, axiosQueryInstance };
+                </code></pre>
+            </section>
+            
+            <section>
+                <h1>React useQuery</h1>
+                <p>Efficient Data Fetching in React</p>
+            </section>
+            <section>
+                <h2>Introduction</h2>
+                <p>Understanding the importance of data fetching in React applications.</p>
+                <p>Introducing useQuery from @tanstack/react-query for efficient data management.</p>
+              </section>
+              <section>
+                <h2>What is React Query?</h2>
+                <p>A library for fetching, caching, and updating data in React applications.</p>
+                <p>Provides powerful hooks for data management.</p>
+              </section>
+              <section>
+                <h2>Benefits of React Query</h2>
+                <ul>
+                  <li>Automatic caching and background updates</li>
+                  <li>Optimistic updates and rollback</li>
+                  <li>Simplifies data fetching logic</li>
+                  <li>Reduces boilerplate code</li>
+                </ul>
+              </section>
+              <section>
+                <h2>useQuery Options</h2>
+                <p>Customizing useQuery behavior with options:</p>
+                <pre><code>
+const { data, error, isLoading } = useQuery(['data'], fetchData, {
+    refetchOnWindowFocus: false,
+    retry: 2,
+    staleTime: 5000,
+});
+                </code></pre>
+              </section>
+              <section>
+                <h2>Query Keys</h2>
+                <p>Using query keys to uniquely identify queries:</p>
+                <pre><code>
+const { data } = useQuery(['data', userId], () => fetchUser(userId));
+                </code></pre>
+              </section>
+              <section>
+                <h2>Handling Mutations</h2>
+                <p>Using useMutation for creating/updating data:</p>
+                <pre><code>
+import { useMutation } from '@tanstack/react-query';
+
+function updateUser(data) {
+    return fetch('https://api.example.com/user', {
+        method: 'POST',
+        body: JSON.stringify(data),
+    });
+}
+
+function MyComponent() {
+    const mutation = useMutation(updateUser);
+
+    const handleUpdate = () => {
+        mutation.mutate({ id: 1, name: 'New Name' });
+    };
+
+    return (
+        <div>
+        <button onClick={handleUpdate}>Update User</button>
+        </div>
+    );
+}
+                </code></pre>
+              </section>
+              <section>
+                <h2>Query Invalidation</h2>
+                <p>Invalidating queries to refetch data:</p>
+                <pre><code>
+import { useQueryClient } from '@tanstack/react-query';
+
+function MyComponent() {
+    const queryClient = useQueryClient();
+
+    const handleUpdate = async () => {
+        await updateUser({ id: 1, name: 'New Name' });
+        queryClient.invalidateQueries(['data']);
+    };
+
+    return (
+        <div>
+            <button onClick={handleUpdate}>Update and Refetch</button>
+        </div>
+    );
+}
+                </code></pre>
+              </section>
+            <section>
+            <h2>Advanced Features</h2>
+            <ul>
+                <li>Query retries</li>
+                <li>Polling</li>
+                <li>Paginated and Infinite Queries</li>
+                <li>Prefetching</li>
+            </ul>
+            </section>
+              
+                            
+                                          
+            <section>
+                <h2>Summary</h2>
+                <ul>
+                    <li>Image uploading in JavaScript</li>
+                    <li>Creating and using Axios instances</li>
+                    <li>Fetching data with React Query</li>
+                    <li>Handling complex data fetching with related entities</li>
+                </ul>
+            </section>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/notes/notes.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/markdown/markdown.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/highlight/highlight.min.js"></script>
+<script>
+    Reveal.initialize({
+        progress: true,
+        showSlideNumber: 'all',
+        plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+    });
+</script>
+</body>
+</html>
